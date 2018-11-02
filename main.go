@@ -26,13 +26,16 @@ type Person struct{
 
 type Task struct{
   ID int64
-  title string
-  description string
-  userId int64
+  Title string
+  Description string
+  Status int64
+  StartDate string
+  EndDate string
+  UserId int64
 }
 
 var people []Person
-
+var tasks []Task
 // our main function
 func main() {
     var mySkill []Skill
@@ -41,12 +44,14 @@ func main() {
     mySkill = append(mySkill,php)
     mySkill = append(mySkill,js)
     people = append(people,Person{ID:1,FirstName:"Alameddin",Surname:"Çelik",Phone:"5417907817",Email:"alameddinc@gmail.com",City:"Istanbul",Age:27,Skills:mySkill})
+    tasks = append(tasks,Task{ID:1,Title:"Deneme Görev", Description:"Deneme Görevi olarak oluşturulmuştur.",Status:0,StartDate:"11/10/2018",EndDate:"12/10/2018",UserId:1})
     router := mux.NewRouter()
     router.HandleFunc("/all", GetPeople).Methods("GET")
     router.HandleFunc("/add", AddDataWithGet).Methods("GET")
     router.HandleFunc("/delete", DeleteData).Methods("GET")
     router.HandleFunc("/update", UpdateData).Methods("GET")
     router.HandleFunc("/find", FindData).Methods("GET")
+    router.HandleFunc("/jobs", Jobs).Methods("GET")
     router.HandleFunc("/filter", FilterAgeData).Methods("GET")
     log.Fatal(http.ListenAndServe(":8000", router))
 }
@@ -143,7 +148,17 @@ func FilterAgeData(w http.ResponseWriter, r *http.Request){
     json.NewEncoder(w).Encode(temp)
   }
 }
-
+func Jobs(w http.ResponseWriter, r *http.Request){
+  id := r.URL.Query()["id"][0]
+  tempId , _ := strconv.ParseInt(id, 10, 64)
+  var temp []Task
+  for _,t:= range tasks{
+    if(t.UserId==tempId){
+      temp = append(temp,t)
+    }
+  }
+  json.NewEncoder(w).Encode(temp)
+}
 //is Set
 func isSet(id int64) bool{
   for _,p := range people {
