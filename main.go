@@ -24,6 +24,13 @@ type Person struct{
   Skills []Skill
 }
 
+type Task struct{
+  ID int64
+  title string
+  description string
+  userId int64
+}
+
 var people []Person
 
 // our main function
