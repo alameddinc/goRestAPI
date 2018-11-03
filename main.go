@@ -52,6 +52,7 @@ func main() {
     router.HandleFunc("/update", UpdateData).Methods("GET")
     router.HandleFunc("/find", FindData).Methods("GET")
     router.HandleFunc("/jobs", Jobs).Methods("GET")
+    router.HandleFunc("/addJob", AddJob).Methods("POST")
     router.HandleFunc("/filter", FilterAgeData).Methods("GET")
     log.Fatal(http.ListenAndServe(":8000", router))
 }
@@ -148,6 +149,7 @@ func FilterAgeData(w http.ResponseWriter, r *http.Request){
     json.NewEncoder(w).Encode(temp)
   }
 }
+//Job List
 func Jobs(w http.ResponseWriter, r *http.Request){
   id := r.URL.Query()["id"][0]
   tempId , _ := strconv.ParseInt(id, 10, 64)
@@ -158,6 +160,13 @@ func Jobs(w http.ResponseWriter, r *http.Request){
     }
   }
   json.NewEncoder(w).Encode(temp)
+}
+//add a job (POST)
+func AddJob(w http.ResponseWriter, r *http.Request){
+  var tempTask Task
+  _ = json.NewDecoder(r.Body).Decode(&tempTask)
+  tasks = append(tasks,tempTask)
+  json.NewEncoder(w).Encode(tempTask)
 }
 //is Set
 func isSet(id int64) bool{
